@@ -6,7 +6,6 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -17,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class ResultActivity extends AppCompatActivity {
 
     ImageView imageView;
-    Button share, preview, cancle;
+    Button share, preview, cancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,62 +25,43 @@ public class ResultActivity extends AppCompatActivity {
 
         imageView = findViewById(R.id.imageView);
         imageView.setImageBitmap(getVideoThumbnail(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/video.mp4"));
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/video.mp4")
+        );
 
         share = findViewById(R.id.share);
         preview = findViewById(R.id.preview);
-        cancle = findViewById(R.id.cancle);
+        cancel = findViewById(R.id.cancel);
 
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent shareIntent = new Intent();
-                shareIntent.setAction(Intent.ACTION_SEND);
-
-                shareIntent.setType("audio/*");
-
-                File vedioFile = new File(
-                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "/video.mp4");
-
-                shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(vedioFile));
-
-                //设置分享列表的标题，并且每次都显示分享列表
-                startActivity(Intent.createChooser(shareIntent, "分享到"));
-
-
-            }
+        share.setOnClickListener(v -> {
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.setType("audio/*");
+            File videoFile = new File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "/video.mp4"
+            );
+            shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(videoFile));
+            //设置分享列表的标题，并且每次都显示分享列表
+            startActivity(Intent.createChooser(shareIntent, "分享到"));
         });
 
-        preview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        preview.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            File videoFile = new File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "/video.mp4"
+            );
+            Uri uri = Uri.parse(videoFile.getAbsolutePath());
+            intent.setDataAndType(uri, "video/*");
+            startActivity(intent);
 
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_VIEW);
-
-                File vedioFile = new File(Environment
-                        .getExternalStoragePublicDirectory(Environment
-                                .DIRECTORY_DOWNLOADS), "/video.mp4");
-                Uri uri = Uri.parse(vedioFile.getAbsolutePath());
-                intent.setDataAndType(uri, "video/*");
-                startActivity(intent);
-
-            }
         });
 
-        cancle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        cancel.setOnClickListener(v -> {
+            Intent intent = new Intent(ResultActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
 
-                Intent intent = new Intent(ResultActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-
-            }
         });
-
-
     }
 
     public Bitmap getVideoThumbnail(String filePath) {

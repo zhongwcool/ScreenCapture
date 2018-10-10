@@ -177,36 +177,40 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     /*
     参数说明：
-    * 第一个参数：虚拟画面名称
-    * 第二个参数：虚拟画面的宽度
-    * 第三个参数：虚拟画面的高度
-    * 第四个参数：虚拟画面的标志
-    * 第五个参数：虚拟画面输出的Surface
-    * 第六个参数：虚拟画面回调接口
-    其中最重要的就是第五个参数，录制画面输出的地方，他这里介绍的是一个Surface类型，那么我们如果想操作录制之后的视频数据，就需要创建一个Surface类型即可。
+    * 第1个参数：虚拟画面名称
+    * 第2个参数：虚拟画面的宽度
+    * 第3个参数：虚拟画面的高度
+    * 第4个参数：录制画面的dpi
+    * 第5个参数：虚拟画面的标志
+    * 第6个参数：画面输出的Surface
+    * 第7个参数：虚拟画面回调接口
+    其中最重要的就是第6个参数，录制画面输出的地方，他这里介绍的是一个Surface类型，那么我们如果想操作录制之后的视频数据，就需要创建一个Surface类型即可。
     1、如果想截屏，那么可以使用ImageReader类的getSurface方法获取
     2、如果想录制视频进行编码，可以使用MediaRecorder类的getSurface方法获取
     */
-
     /*surface不同于surfaceView*/
     private VirtualDisplay createVirtualDisplay() {
-        return mMediaProjection.createVirtualDisplay("MainActivity",
-                DISPLAY_WIDTH, DISPLAY_HEIGHT, mScreenDensity,
+        return mMediaProjection.createVirtualDisplay(
+                "MainActivity",
+                DISPLAY_WIDTH,
+                DISPLAY_HEIGHT,
+                mScreenDensity,
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
-                /*surface是mediaRecorder的，以mediaprojection为源输出到surface，捕获*/
-                mMediaRecorder.getSurface(), null /*Callbacks*/, null
-                /*Handler*/);
+                /*surface是mediaRecorder的，以mediaProjection为源输出到surface，捕获*/
+                mMediaRecorder.getSurface(),
+                null /*Callbacks*/,
+                null/*Handler*/);
     }
 
     /*
     MediaRecorder这个类相对简单，因为他封装的很好，直接就是几个接口来完成视频录制，
-    比如视频的编码格式，视频的保存路劲，视频来源等，用法简单
+    比如视频的编码格式，视频的保存路径，视频来源等，用法简单
     */
 
     private void initRecorder() {
         try {
             mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            //MediaRecoder这个类也是可以通过setVideoSource方法设置Surface类型的视频输入源的
+            //MediaRecorder这个类也是可以通过setVideoSource方法设置Surface类型的视频输入源的
             mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
             mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
             mMediaRecorder.setOutputFile(
@@ -217,9 +221,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             mMediaRecorder.setVideoEncodingBitRate(5 * 1024 * 1024);
             mMediaRecorder.setVideoFrameRate(30);
-            int rotation = getWindowManager().getDefaultDisplay().getRotation();
-            // int orientation = ORIENTATIONS.get(rotation + 90);
-            //  mMediaRecorder.setOrientationHint(orientation);
+            //int rotation = getWindowManager().getDefaultDisplay().getRotation();
+            //int orientation = ORIENTATIONS.get(rotation + 90);
+            //mMediaRecorder.setOrientationHint(orientation);
             mMediaRecorder.prepare();
         } catch (IOException e) {
             e.printStackTrace();
