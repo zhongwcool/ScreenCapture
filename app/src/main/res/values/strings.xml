@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">屏幕录制</string>
+    <string name="camera_and_location_rationale">应用需要相关权限才能运行</string>
+</resources>
