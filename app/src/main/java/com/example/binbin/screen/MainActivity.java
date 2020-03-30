@@ -16,11 +16,12 @@ import android.view.View;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.IOException;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -64,8 +65,11 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             return true;
         } else {
             // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, getString(R.string.camera_and_location_rationale),
-                    RC_CAMERA_AND_LOCATION, perms);
+            EasyPermissions.requestPermissions(
+                    this,
+                    getString(R.string.camera_and_location_rationale),
+                    RC_CAMERA_AND_LOCATION,
+                    perms);
             return false;
         }
     }
@@ -161,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             mMediaRecorder.reset();
             Log.v(TAG, "Stopping Recording");
             stopScreenSharing();
+            //跳转录屏结果
             Intent intent = new Intent(MainActivity.this, ResultActivity.class);
             startActivity(intent);
         }
@@ -184,9 +189,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     * 第5个参数：虚拟画面的标志
     * 第6个参数：画面输出的Surface
     * 第7个参数：虚拟画面回调接口
-    其中最重要的就是第6个参数，录制画面输出的地方，他这里介绍的是一个Surface类型，那么我们如果想操作录制之后的视频数据，就需要创建一个Surface类型即可。
-    1、如果想截屏，那么可以使用ImageReader类的getSurface方法获取
-    2、如果想录制视频进行编码，可以使用MediaRecorder类的getSurface方法获取
+    * 其中最重要的就是第6个参数，录制画面输出的地方，他这里介绍的是一个Surface类型，那么我们如果想操作录制之后的视频数据，就需要创建一个Surface类型即可。
+    * 1、如果想截屏，那么可以使用ImageReader类的getSurface方法获取
+    * 2、如果想录制视频进行编码，可以使用MediaRecorder类的getSurface方法获取
     */
     /*surface不同于surfaceView*/
     private VirtualDisplay createVirtualDisplay() {
@@ -198,8 +203,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
                 /*surface是mediaRecorder的，以mediaProjection为源输出到surface，捕获*/
                 mMediaRecorder.getSurface(),
-                null /*Callbacks*/,
-                null/*Handler*/);
+                null/*Callbacks*/,
+                null/*Handler*/
+        );
     }
 
     /*
